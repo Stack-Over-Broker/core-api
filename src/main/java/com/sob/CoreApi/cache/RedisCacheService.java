@@ -50,6 +50,11 @@ public class RedisCacheService<T> implements CacheService<T> {
 
     @Override
     public void put(String key, T value) {
+        if (value == null) {
+            log.warn("[CACHE SKIP] Tentativa de cachear valor nulo para key {}", key);
+            return;
+        }
+
         try {
             String json = objectMapper.writeValueAsString(value);
             redisTemplate.opsForValue().set(key, json, ttl);
